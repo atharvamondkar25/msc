@@ -1,0 +1,23 @@
+import heapq
+graph = {
+    "S":["A","B","C"],
+    "B":["D","H"],
+    "H":["F","G"],
+    "G":["E"]
+}
+heuristic = {"S":10,"A":9,"B":7,"C":8,"D":8,"E":0,"H":6,"F":6,"G":3}
+def best_first(start, goal):
+    pq = []
+    heapq.heappush(pq,(heuristic[start],start))
+    visited=[]
+    while pq:
+        h,node = heapq.heappop(pq)
+        if node == goal:
+            print("Goal Found:",node)
+            print(visited)
+            return
+        visited.append(node)
+        for n in graph[node]:
+            if n not in visited:
+                heapq.heappush(pq,(heuristic[n],n))
+best_first("S","E")
