@@ -1,0 +1,33 @@
+graph = {
+    "S":["A","B"],
+    "A":["C","D"],
+    "B":["E","F"],
+    "C":["G","H"],
+    "E":["I","J"],
+    "H":["K","L"],
+    "J":["M","N"]   
+}
+
+heuristic = {
+    "A":7,"B":10, "C":5, "D":8,
+    "E":6, "F":9, "G":6, "H":4,
+    "I":7, "J":5,"K":2, "L":0,
+    "M":3,"N":1
+}
+
+def beam_search(start, goal, width):
+    level = [start]
+    visited = []
+    while level:
+        print("Current Beam:", level)
+        visited += level
+        if goal in level:
+            print("Goal Found")
+            print("Visited Nodes:", visited)
+            return
+        next_nodes = []
+        for node in level:
+            next_nodes += graph[node]
+        next_nodes = sorted(next_nodes, key=lambda x: heuristic[x])
+        level = next_nodes[:width]
+beam_search("S","L",2)
