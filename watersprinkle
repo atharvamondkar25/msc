@@ -1,0 +1,43 @@
+class automatic_sprinkler:
+    def __init__(self):
+        self.soil_moisture=0
+        self.weather_condition="sunny"
+        self.time_of_day="day"
+
+    def set_soil_moisture(self,moisture_level):
+        self.soil_moisture=moisture_level
+    def set_weather_condition(self,condition):
+        self.weather_condition=condition
+    def set_time_of_day(self, time_of_day):
+        self.time_of_day=time_of_day
+    def decide_sprinkler_action(self):
+        if self.weather_condition == "rainy":
+            print("no need of water, It's already Rainy")
+            return "no action needed"
+        if self.weather_condition == "cloudy":
+            if self.soil_moisture>50:
+                print("It is cloudy, but soil is dry. Sprinkler activated")
+                return "Sprinkler ON"
+            else:
+                print("It is cloudy, soil moisture is sufficient. No need to water")
+                return "no action needed"
+        if self.weather_condition == "sunny":
+            if self.soil_moisture <30 and self.time_of_day == "day":
+                print("It is sunny, soil is dry. Sprinkler activated")
+                return "Sprinkler ON"
+            elif self.soil_moisture >30 and self.time_of_day == "day":
+                print("Soil moisture is sufficient. No need to water")
+                return "no action needed"
+sprinkler = automatic_sprinkler()
+
+# Get inputs from the user
+soil_moisture_input = int(input("Enter soil moisture level (0-100): "))
+weather_condition_input = input("Enter weather condition (sunny, cloudy, rainy): ")
+time_of_day_input = input("Enter time of day (day, night): ")
+
+sprinkler.set_soil_moisture(soil_moisture_input)
+sprinkler.set_weather_condition(weather_condition_input)
+sprinkler.set_time_of_day(time_of_day_input)
+
+result = sprinkler.decide_sprinkler_action()
+print("sprinkler action:",result)
