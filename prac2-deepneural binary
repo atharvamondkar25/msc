@@ -1,0 +1,23 @@
+from numpy import loadtxt
+from keras.models import Sequential
+from keras.layers import Dense, Input
+
+dataset = loadtxt('diabetes.csv', delimiter=",", skiprows=1)
+X = dataset[:,0:8]
+Y = dataset[:,8]
+
+model=Sequential()
+model.add(Input(shape=(8,)))
+model.add(Dense(units=12, activation='relu'))
+model.add(Dense(units=8, activation='relu'))
+model.add(Dense(units=1, activation='sigmoid'))
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+model.fit(X, Y, epochs=150, batch_size=10)
+
+accuracy = model.evaluate(X,Y)
+print('Model Accuracy: ', (accuracy*100))
+
+prediction=(model.predict(X)>0.5).astype(int)
+for i in range(5):
+    print(X[i].tolist(), prediction[i], Y[i])
