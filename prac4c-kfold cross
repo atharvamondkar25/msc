@@ -1,0 +1,31 @@
+import pandas as pd
+from keras.models import Sequential
+from keras.layers import Dense, Input
+from sklearn.preprocessing import StandardScaler
+from scikeras.wrappers import KerasRegressor
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import KFold, cross_val_score
+
+dataframe=pd.read_csv("housing.csv", header=None)
+dataset=dataframe.values
+
+X=dataset[:, 0:13]
+Y=dataset[:, 13]
+
+def wider_model():
+    model=Sequential()
+    model.add(Input(shape=(13,)))
+    model.add(Dense(units=15, kernel_initializer="normal", activation="relu"))
+    model.add(Dense(units=13, kernel_initializer="normal", activation="relu"))
+    model.add(Dense(units=1, kernel_initializer="normal"))
+    model.compile(loss='mse', optimizer="adam")
+    return model
+
+estimators=[]
+estimators.append(('standardize', StandardScaler()))
+estimators.append(('mlp', KerasRegressor(model=wider_model, epochs=100, batch_size=5)))
+pipeline=Pipeline(estimators)
+
+kfold=KFold(n_splits=10)
+results=cross_val_score(pipeline, X, Y, cv=kfold, scoring='neg_mean_squared_error')
+print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
