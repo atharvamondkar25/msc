@@ -1,0 +1,38 @@
+import pandas as pd
+from pgmpy.estimators import DiscreteMLE
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.inference import VariableElimination
+
+# CSV must contain the columns used below and suitable discrete values.
+data = pd.read_csv("heart.csv")
+
+model = DiscreteBayesianNetwork([
+    ("Age", "HeartDisease"),
+    ("Gender", "HeartDisease"),
+    ("ChestPain", "HeartDisease"),
+    ("Cholesterol", "HeartDisease"),
+    ("Lifestyle", "HeartDisease")
+])
+
+model.fit(data, estimator=DiscreteMLE)
+print("Model fitted:", model.check_model())
+
+heart_infer = VariableElimination(model)
+
+print("Enter categorical values matching your dataset.")
+print("Gender: Male=1, Female=0")
+print("ChestPain: Low=0, Medium=1, High=2, Extreme=3")
+print("Lifestyle: Athlete=0, Active=1, Moderate=2, Sedentary=3")
+
+evidence = {
+    "Age": int(input("Enter Age category: ")),
+    "Gender": int(input("Enter Gender: ")),
+    "ChestPain": int(input("Enter ChestPain level: ")),
+    "Cholesterol": int(input("Enter Cholesterol category: ")),
+    "Lifestyle": int(input("Enter Lifestyle category: "))
+}
+
+result = heart_infer.query(variables=["HeartDisease"], evidence=evidence)
+print(result)
+
+ 
