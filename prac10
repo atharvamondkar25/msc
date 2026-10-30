@@ -1,0 +1,29 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("tips.csv")
+print(data.head())
+
+plt.scatter(data["day"], data["tip"])
+plt.title("Scatter Plot")
+plt.xlabel("Day")
+plt.ylabel("Tip")
+plt.show()
+
+day_order = ["Thur", "Fri", "Sat", "Sun"]
+data["day"] = pd.Categorical(data["day"], categories=day_order, ordered=True)
+
+day_counts = data["day"].value_counts().sort_index()
+print(day_counts)
+
+daily = data.groupby("day", observed=True)["tip"].agg(
+    ["count", "sum", "mean", "max"]
+)
+print(daily)
+
+plt.plot(daily.index.astype(str), daily["mean"], marker="o")
+plt.title("Average Tip Trend Across Days")
+plt.xlabel("Day")
+plt.ylabel("Average Tip")
+plt.grid(True)
+plt.show()
