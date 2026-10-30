@@ -1,0 +1,49 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+np.random.seed(42)
+df = pd.DataFrame({
+    "Age": np.random.randint(18, 72, 100),
+    "Salary": np.random.randint(20000, 1000000, 100),
+    "Score": np.random.randint(0, 101, 100)
+})
+print(df.head())
+
+minmax = MinMaxScaler()
+standard = StandardScaler()
+df["Age_minmax"] = minmax.fit_transform(df[["Age"]])
+df["Age_standard"] = standard.fit_transform(df[["Age"]])
+print(df[["Age", "Age_minmax", "Age_standard"]].head())
+
+df["Age_group"] = pd.cut(
+    df["Age"], bins=[17, 30, 45, 60, 72],
+    labels=["18-30", "31-45", "46-60", "61-72"]
+)
+print(df[["Age", "Age_group"]].head())
+
+# Fix right-skewed salary values using log transformation
+df["Salary_log"] = np.log1p(df["Salary"])
+print("Skewness before:", round(df["Salary"].skew(), 3))
+print("Skewness after log transform:", round(df["Salary_log"].skew(), 3))
+
+plt.figure(figsize=(10, 4))
+plt.subplot(1, 2, 1)
+plt.hist(df["Salary"], bins=15, edgecolor="black")
+plt.title("Salary (Skewed)")
+plt.subplot(1, 2, 2)
+plt.hist(df["Salary_log"], bins=15, edgecolor="black")
+plt.title("Salary (Log Transformed)")
+plt.show()
+
+random_sample = df.sample(n=20, random_state=1)
+print("Random sample shape:", random_sample.shape)
+
+frac_sample = df.sample(frac=0.1, random_state=1)
+print("10% sample shape:", frac_sample.shape)
+
+stratified = df.groupby("Age_group", observed=True, group_keys=False).apply(
+    lambda group: group.sample(frac=0.1, random_state=1)
+)
+print("Stratified sample shape:", stratified.shape)
