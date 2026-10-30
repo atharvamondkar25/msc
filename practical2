@@ -1,0 +1,58 @@
+import numpy as np
+from scipy.stats import normaltest
+import matplotlib.pyplot as plt
+
+x = np.array([1, 3, 5, 7, 8, 9, 10, 15])
+y = np.array([10, 20, 30, 40, 50, 60, 70, 80])
+
+def analyze_data(X, Y):
+    if len(X) != len(Y):
+        raise ValueError("Arrays X and Y must have the same length.")
+
+    mean_x = X.mean()
+    mean_y = Y.mean()
+    variance_x = np.var(X)
+    variance_y = np.var(Y)
+    std_x = np.std(X)
+    std_y = np.std(Y)
+    corr_value = np.corrcoef(X, Y)[0, 1]
+
+    print("Mean of X:", mean_x)
+    print("Mean of Y:", mean_y)
+    print("Variance of X:", variance_x)
+    print("Variance of Y:", variance_y)
+    print("Standard deviation of X:", std_x)
+    print("Standard deviation of Y:", std_y)
+    print("Correlation:", corr_value)
+    return corr_value
+
+def check_distribution(data, name):
+    alpha = 0.05
+    stat, p = normaltest(data)
+    print(f"\\n--- Distribution Check for {name} ---")
+    print(f"Normality Test Statistic: {stat:.2f}, P-value: {p:.3f}")
+    if p < alpha:
+        print(f"Reject the null hypothesis: {name} is not likely to be normally distributed.")
+    else:
+        print(f"Fail to reject the null hypothesis: {name} may be normally distributed.")
+
+corr_value = analyze_data(x, y)
+check_distribution(x, "X")
+check_distribution(y, "Y")
+
+plt.figure(figsize=(8, 6))
+plt.scatter(x, y, color="blue", label="Data points")
+plt.xlabel("x values")
+plt.ylabel("y values")
+plt.title(f"Scatter Plot of x vs y (Pearson r = {corr_value:.2f})")
+plt.text(min(x) + 0.5, max(y) - 5, f"Pearson r = {corr_value:.2f}",
+         fontsize=12, color="red", weight="bold")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Uniform-distribution example
+uniform_data = np.random.uniform(0, 1, 1000)
+plt.hist(uniform_data, bins=20, edgecolor="black")
+plt.title("Uniform Distribution")
+plt.show()
