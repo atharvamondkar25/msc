@@ -1,0 +1,37 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+data = pd.read_csv("tips.csv")
+print(data.head())
+
+# Bar chart: total bill by day
+data.groupby("day")["total_bill"].sum().plot(kind="bar")
+plt.title("Total Bill by Day")
+plt.xlabel("Day")
+plt.ylabel("Total Bill")
+plt.show()
+
+# Histogram
+plt.hist(data["total_bill"], bins=15, color="steelblue", edgecolor="black")
+plt.title("Histogram of Total Bill")
+plt.xlabel("Total Bill")
+plt.ylabel("Frequency")
+plt.show()
+
+# Multiple-variable summary
+print(data.describe())
+
+# Pie chart examples
+y = np.array([35, 25, 25, 15])
+mylabels = ["Apples", "Bananas", "Cherries", "Dates"]
+mycolors = ["black", "hotpink", "blue", "#4CAF50"]
+
+plt.pie(y)
+plt.show()
+
+plt.pie(y, labels=mylabels)
+plt.show()
+
+plt.pie(y, labels=mylabels, colors=mycolors)
+plt.show()
